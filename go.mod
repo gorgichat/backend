@@ -1,4 +1,4 @@
-module github.com/darkcukka/backend
+module github.com/gorgichat/backend
 
 go 1.22.2
 
