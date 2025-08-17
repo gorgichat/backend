@@ -1,9 +1,9 @@
-name: Check GO Files (Basic CI).
+name: CI
 
 on: [push, pull_request]
 
 jobs:
-  linting:
+  lint_and_tests:
     runs-on: ubuntu-latest
 
     steps:
