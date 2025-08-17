@@ -4,13 +4,13 @@ import (
 	"net/http"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
-	"log"
+	"log/slog"
 )
 
 func main() {
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		slog.Error("Error loading .env file")
 	}
 
 	r := gin.Default()

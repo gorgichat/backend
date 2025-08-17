@@ -11,7 +11,7 @@ case "${1}" in
 	;;
 	*)
 		[ ! -d "build" ] && mkdir "build"
-		go build -o "build/darkcukka" "src/main.go"
+		go build -o "build/gorgi" "src/main.go"
 	;;
 esac
 echo "${0##*/}: ${operation}: operation completed."
