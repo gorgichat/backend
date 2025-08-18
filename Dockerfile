@@ -24,4 +24,4 @@ EXPOSE 8080
 ENV GIN_MODE=release
 
 ENTRYPOINT ["gorgi"]
-CMD ["--port", "8080"]
+CMD ["--host", "0.0.0.0", "--port", "8080"]
