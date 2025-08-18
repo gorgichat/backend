@@ -3,11 +3,15 @@ package main
 import (
 	"os"
 	"flag"
+	"time"
 	"strconv"
 	"net/http"
+	"log/slog"
+
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
-	"log/slog"
+	"github.com/gorgichat/backend/pkg/routes"
+	"github.com/gorgichat/backend/pkg/database"
 )
 
 var (
@@ -16,9 +20,9 @@ var (
 
 	dbHost     = flag.String("db-host", "localhost", "Database host")
 	dbPort     = flag.Int("db-port", 3306, "Database port")
-	dbUser     = flag.String("db-user", "root", "Database user")
+	dbUser     = flag.String("db-user", "gorgi", "Database user")
 	dbPassword = flag.String("db-password", "", "Database password")
-	dbName     = flag.String("db-name", "gorgi_chat", "Database name")
+	dbName     = flag.String("db-name", "gorgi", "Database name")
 )
 
 func main() {
@@ -55,11 +59,26 @@ func main() {
 		*dbName = val
 	}
 
+	err = database.ConnectDatabase(*dbHost, *dbPort, *dbUser, *dbPassword, *dbName)
+	if err != nil {
+		slog.Error("Error connecting to database: ", "err", err)
+		return
+	}
+	database.MigrateDatabase(database.GetDB())
+
 	r := gin.Default()
+	routes.SetupRoutes(r)
 
-	r.GET("/", func(c *gin.Context) {
-		c.String(http.StatusOK, "hello world")
-	})
+	s := &http.Server{
+		Addr:         *host + ":" + strconv.Itoa(*port),
+		Handler:      r,
+		ReadTimeout:  5 * time.Second,
+		WriteTimeout: 10 * time.Second,
+	}
 
-	_ =	r.Run()
+	slog.Info("Starting server at", "url", "http://"+ *host + ":" + strconv.Itoa(*port))
+	if err := s.ListenAndServe(); err != nil {
+		slog.Error("Error starting server: ", "err", err)
+		return
+	}
 }

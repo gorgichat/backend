@@ -4,6 +4,8 @@ set -e
 
 export operation="${1:-build}"
 
+echo "${0##*/}: operation started..."
+
 case "${1}" in
 	"clean"|"c")
 		export operation="clean"
@@ -14,4 +16,5 @@ case "${1}" in
 		go build -o "build/gorgi" "src/main.go"
 	;;
 esac
+
 echo "${0##*/}: ${operation}: operation completed."
