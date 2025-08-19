@@ -19,7 +19,7 @@ import (
 var (
 	host       = flag.String("host", "127.0.0.1", "Gorgi Chat host")
 	port       = flag.Int("port", 8080, "Gorgi Chat running port")
-	language   = flag.String("language", "en", "Language for the chat")
+	// language   = flag.String("language", "en", "Language for the chat")
 
 	dbHost     = flag.String("db-host", "127.0.0.1", "Database host")
 	dbPort     = flag.Int("db-port", 3306, "Database port")
