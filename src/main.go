@@ -10,13 +10,16 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
+	// "github.com/nicksnyder/go-i18n/v2/i18n"
 	"github.com/gorgichat/backend/pkg/routes"
 	"github.com/gorgichat/backend/pkg/database"
+	// "github.com/gorgichat/backend/pkg/localization"
 )
 
 var (
-	host = flag.String("host", "127.0.0.1", "Gorgi Chat host")
-	port = flag.Int("port", 8080, "Gorgi Chat running port")
+	host       = flag.String("host", "127.0.0.1", "Gorgi Chat host")
+	port       = flag.Int("port", 8080, "Gorgi Chat running port")
+	language   = flag.String("language", "en", "Language for the chat")
 
 	dbHost     = flag.String("db-host", "127.0.0.1", "Database host")
 	dbPort     = flag.Int("db-port", 3306, "Database port")
@@ -59,13 +62,19 @@ func main() {
 		*dbName = val
 	}
 
+	// Connect to the database
 	err = database.ConnectDatabase(*dbHost, *dbPort, *dbUser, *dbPassword, *dbName)
 	if err != nil {
 		slog.Error("Error connecting to database: ", "err", err)
 		return
 	}
+	// Migrate the database
 	database.MigrateDatabase(database.GetDB())
 
+	// Initialize i18n
+	// bundle := i18n.NewBundle(language.English)
+
+	// Initialize Gin
 	r := gin.Default()
 	routes.SetupRoutes(r)
 
@@ -76,6 +85,7 @@ func main() {
 		WriteTimeout: 10 * time.Second,
 	}
 
+	// Start the server
 	slog.Info("Starting server at", "url", "http://"+ *host + ":" + strconv.Itoa(*port))
 	if err := s.ListenAndServe(); err != nil {
 		slog.Error("Error starting server: ", "err", err)
